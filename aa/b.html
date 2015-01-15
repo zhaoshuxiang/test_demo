@@ -1,0 +1,58 @@
+<!Doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>b</title>
+        <style type="text/css">
+            canvas{
+                border: 1px solid gray;
+            }
+        </style>
+    </head>
+    <body>
+
+        <canvas id="main"></canvas>
+
+        <a href="javascript:;" id="trigger">trigger</a>
+
+        <script type="text/javascript">
+            var ce = document.getElementById('main');
+            ce.width=600;
+            ce.height=600;
+            // ce.style.width="300px";
+            // ce.style.height="300px";
+            // var ctx = ce.getContext("2d");
+            // ctx.arc(300, 300, 300, 0, Math.PI * 2);
+            // // ctx.scale(2, 2);
+
+
+
+            // ctx.fillStyle="#000";
+            // ctx.fill();
+
+            // ctx.fillStyle="#fff";
+            // ctx.font="100px arial"
+            // ctx.fillText('5', 300, 300);
+
+            var ctx = ce.getContext("2d");
+
+            ctx.fillStyle = "black";
+            ctx.fillRect(10, 10, 200, 200);
+
+            ctx.fillStyle = "red";
+            ctx.fillRect(1, 1, 50, 50);
+
+            ctx.globalCompositeOperation = "source-over";
+            ctx.fillRect(60, 1, 50, 50);
+
+            // ctx.globalCompositeOperation = "destination-atop";
+            // ctx.fillRect(1, 60, 50, 50);
+
+            ctx.globalAlpha = .5;
+
+            ctx.globalCompositeOperation = "source-atop";
+            ctx.fillRect(60, 60, 50, 50);
+        </script>
+    </body>
+</html>

@@ -2,33 +2,82 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
         <title>aa</title>
         <style type="text/css">
-            /*
-                背景颜色：#f7f7e6
-
-
-            */
-
             html, body{
                 background-color: #f7f7e6;
                 height: 100%;
                 margin: 0px;
             }
 
-            #main{
+            #game{
                 display: block;
                 margin: 0 auto;
+            }
+
+            #main{
+                display: none;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                height: 100%;
+                background-color: #f7f7e6;
+            }
+
+            h1{
+                text-align: center;
+                font-size: 80px;
+            }
+
+            .con{
+                text-align: center;
+            }
+
+            .start{
+                display: inline-block;
+                width: 105px;
+                height: 75px;
+                border: 1px solid #100808;
+                border-radius: 15px;
+                position: relative;
+            }
+
+            .start::before{
+                content: '';
+                position:absolute;
+                top: 16px;
+                left: 40px;
+                width: 0px;
+                height: 0px;
+                border: 22px solid transparent;
+                border-left: 22px solid #100808;
+            }
+
+            .start span{
+                display: inline-block;
+                color: #100808;
+                font-size: 10px;
+                position: absolute;
+                bottom: 15px;
+                right: 5px;
             }
         </style>
     </head>
     <body>
 
-        <canvas id="main" width="318px" height="500"></canvas>
+        <div id="main">
+            <h1>aa</h1>
+            <div class="con">
+                <a href="javascript:;" class="start"><span>LEVEL 7</span></a>
+            </div>
+        </div>
+        <canvas id="game"></canvas>
+        <div id="success"></div>
+        <div id="failed"></div>
 
-        <a href="javascript:;" id="trigger">trigger</a>
-
+        <div id="conl"></div>
         <script src="js/all.js"></script>
     </body>
 </html>

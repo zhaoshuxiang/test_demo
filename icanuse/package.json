@@ -1,0 +1,15 @@
+{
+  "name": "icanuse",
+  "version": "1.0.0",
+  "description": "what new feature i can use ? ",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.10.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shuxiang",
+  "license": "MIT"
+}

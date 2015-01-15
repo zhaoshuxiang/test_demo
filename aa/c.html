@@ -1,0 +1,92 @@
+<!Doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>c</title>
+        <style type="text/css">
+            body{
+                margin-left: 100px;
+            }
+
+            #c1{
+                border: 1px solid gray;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>直线移动</h1>
+        <h2>1、水平直线移动</h2>
+        <canvas id="main" width="500px" height="100px"></canvas>
+
+        <h2>2、两点间移动</h2>
+        <canvas id="c1" width="500px" height="500px"></canvas>
+
+        <script type="text/javascript">
+            var e1 = document.getElementById("main");
+            var ctx = e1.getContext("2d");
+
+            var e2 = document.getElementById('c1');
+            var ctx2 = e2.getContext("2d");
+
+            var RADIUS = 10;
+            var SPEED = 2;
+
+            var i = 0;
+            function draw() {
+                ctx.clearRect(0, 0, 500, 500);
+                var x = RADIUS, y = RADIUS;
+
+                // ctx.clearRect(0, 0, 500, 500);
+                ctx.beginPath();
+                ctx.moveTo(0, RADIUS * 2 + 0.5);
+                ctx.lineTo(500, RADIUS * 2 + 0.5);
+                ctx.stroke();
+
+
+                ctx.beginPath();
+                x = x + i * SPEED;
+                i = i + 1;
+                ctx.moveTo(x, y);
+                ctx.arc(x, y, RADIUS, 0, Math.PI * 2);
+
+                ctx.fill();
+
+                // ctx.clearRect(0, 0, 500, 500);
+                if (i * SPEED + RADIUS * 2 <= 500) {
+                    requestAnimationFrame(draw);
+                }
+            }
+            requestAnimationFrame(draw);
+
+            /**
+                从坐标(10, 10)移动到坐标(490, 490)
+                s = v * t
+                v = ?px / 16.5
+                ? 的值决定了速度
+            */
+            var j = 0;
+            var speed = 2;
+            function p2pMove() {
+                var x = RADIUS;
+                var y = RADIUS;
+
+                x = x + Math.cos(Math.PI / 8) * speed * j;
+                y = y + Math.sin(Math.PI / 8) * speed * j;
+                j = j + 1;
+
+                if (x < 490) {
+                    ctx2.beginPath();
+                    ctx2.clearRect(0, 0, 500, 500);
+                    ctx2.arc(x, y, RADIUS, 0, Math.PI * 2);
+                    ctx2.fill();
+
+                    requestAnimationFrame(p2pMove);
+                }
+            }
+
+            requestAnimationFrame(p2pMove);
+
+        </script>
+    </body>
+</html>
