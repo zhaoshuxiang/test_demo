@@ -55,21 +55,23 @@
             f: true // 是否完成连接
         }],
         // 发射塔剩余的小球数
-        number: 10,
+        number: 3,
+        // 发射塔上小球的坐标
+
         // 小球的状态： 1、还在发射塔中 2、飞行中 3、进入轨道 4、连线完成
         flag: 1,
+
         // 正在发射的小球的坐标
         flay: {
             x: CANVAS_RADIUS,
             y: CANVAS_RADIUS * 2 + DIST * dpr + SMALL_RADIUS
         },
+
         // 连线的坐标
         line: {
             x: CANVAS_RADIUS,
             y: CANVAS_RADIUS * 2 - SMALL_RADIUS
-        },
-
-        lineL: 0
+        }
     };
 
     var cE = document.getElementById("game");
@@ -80,14 +82,12 @@
         initGameLevel(1);
         initCanvasEle();
         draw();
-        // drawT();
 
         // 更精细的画线
         // ct.beginPath();
         // ct.moveTo(0, 1000.5);
         // ct.lineTo(200, 1000.5);
         // ct.stroke();
-
     }
 
     function initEvent() {
@@ -101,7 +101,8 @@
 
         state.level = level;
         state.speed = Math.PI / 180;
-        state.number = 15;
+        state.res = 2;
+        state.number = 3;
 
         // 初始化小球的角度
         for (var i = 0; i < NUMBER; i++) {
@@ -124,16 +125,33 @@
     }
 
     function draw() {
-        if (state.res === 2) {
+        if (state.res === 2 || -3 === state.res || -4 === state.res) {
+            // 清空画布
+            ct.clearRect(0, 0, CANVAS_WIDTH * 2, CANVAS_HEIGHT);
+
+            // 开始一条新的路径
+            ct.beginPath();
+            ct.fillStyle = "#000";
             // 绘制转盘
             drawCircle();
-
             // 绘制发射塔
             drawT();
-        }
+            ct.stroke();
+            ct.fill();
 
-        ct.stroke();
-        ct.fill();
+            // 绘制数字
+            drawNumber();
+
+            if (state.res === -3) {
+                state.res = 3;
+                showFailed();
+            }
+
+            if (state.res === -4) {
+                state.res = 4;
+                showSuccess();
+            }
+        }
 
         requestAnimationFrame(draw);
     }
@@ -142,11 +160,7 @@
         // 大圆和小圆圆心的距离
         var PP = BIG_RADIUS + SPOKE_LENGTH + SMALL_RADIUS;
 
-        // 清空画布
-        ct.clearRect(0, 0, CANVAS_WIDTH * 2, CANVAS_HEIGHT);
 
-        // 绘制：大圆
-        ct.beginPath();
         ct.arc(CANVAS_RADIUS, CANVAS_RADIUS, BIG_RADIUS - dpr, 0, Math.PI * 2);
 
         // 画数字
@@ -176,7 +190,6 @@
         // angle = angle + state.speed;
     }
 
-
     function drawT() {
         var endNumber = state.number >= BASE_NUMBER ? state.number - BASE_NUMBER : 0;
         var x, y;
@@ -195,7 +208,7 @@
             // ct.fillStyle="red";
             // ct.fillText(i, CANVAS_RADIUS, y);
 
-            ct.arc(CANVAS_RADIUS, y, SMALL_RADIUS, 0, Math.PI * 2);
+            ct.arc(CANVAS_RADIUS, y, SMALL_RADIUS - dpr, 0, Math.PI * 2);
         }
 
         // 已发射的小球
@@ -204,20 +217,58 @@
             y = state.flay.y;
 
             ct.moveTo(x, y);
-            ct.arc(x, y, SMALL_RADIUS, 0, Math.PI * 2);
+            ct.arc(x, y, SMALL_RADIUS - dpr, 0, Math.PI * 2);
         }
 
         // 链接线
         if (3 === state.flag) {
             var tB = state.coordinate[state.coordinate.length - 1];
-            x = Math.cos(tB.angle) * state.lineL + CANVAS_RADIUS;
-            y = Math.sin(tB.angle) * state.lineL + CANVAS_RADIUS;
+            // x = Math.cos(tB.angle) * state.lineL + CANVAS_RADIUS;
+            // y = Math.sin(tB.angle) * state.lineL + CANVAS_RADIUS;
 
-            state.lineL = state.lineL + 5;
+            // state.lineL = state.lineL + 5;
             ct.moveTo(tB.x, tB.y);
             ct.lineTo(CANVAS_RADIUS, CANVAS_RADIUS);
             // 连线成功
             tB.f = true;
+        }
+    }
+
+    function drawNumber() {
+        var x, y;
+        var sB = state.coordinate;
+
+        // 大圆数字
+        ct.fillStyle = "#fff";
+        ct.font = 50 * dpr + "px sans-serif"
+        ct.textBaseline = "middle";
+        ct.textAlign="center";
+        ct.fillText(state.level, CANVAS_RADIUS, CANVAS_RADIUS);
+
+        // 小圆数字
+        ct.font = 10 * dpr + "px sans-serif"
+        for (var i = 0; i < sB.length; i++) {
+            x = sB[i].x;
+            y = sB[i].y;
+
+            if (sB[i].value) {
+                ct.fillText(sB[i].value, x, y);
+            }
+        }
+
+        // 发射塔上的数字
+        for (i = 0; i < BASE_NUMBER; i++) {
+            x = CANVAS_RADIUS;
+
+            if (state.number - i > 0) {
+                if (0 === i) {
+                    y = CANVAS_RADIUS * 2 + DIST * dpr + SMALL_RADIUS;
+                } else {
+                    y = CANVAS_RADIUS * 2 + DIST * dpr + SMALL_RADIUS + (SMALL_RADIUS * 2 + INTERVAL) * i;
+                }
+
+                ct.fillText(state.number - i, x, y);
+            }
         }
     }
 
@@ -232,12 +283,14 @@
 
     // 更新飞动小球的位置
     function ballSpeed() {
-        var bSpeed = 50;
+        var bSpeed = 20 * dpr;
         var p = CANVAS_RADIUS * 2 - SMALL_RADIUS;
+
 
         if (state.flay.y >= p - bSpeed && state.flay.y <= p + bSpeed) {
             state.flay.y = CANVAS_RADIUS * 2 - SMALL_RADIUS;
             state.flag = 3;
+
             state.coordinate.push({
                 angle: Math.PI / 180 * 90,
                 x: CANVAS_RADIUS,
@@ -246,9 +299,12 @@
                 f: false
             });
 
-            state.flay.y = CANVAS_RADIUS * 2 + DIST * dpr + SMALL_RADIUS;
+            // setTimeout(function(){
+                check();
+            // }, 20);
 
-            check();
+            // 重置下一个小球的坐标
+            state.flay.y = CANVAS_RADIUS * 2 + DIST * dpr + SMALL_RADIUS;
         } else {
             state.flay.y = state.flay.y - bSpeed;
             requestAnimationFrame(ballSpeed);
@@ -268,20 +324,26 @@
             dis = Math.sqrt(xS * xS + yS * yS);
 
             if (dis < SMALL_RADIUS * 2) {
-                state.res = 3;
-                showFailed();
+                state.res = -3;
+                return;
             }
+        }
+
+        // 是否过关
+        if (state.number < 1) {
+            state.res = -4;
         }
     }
 
     function showFailed() {
+        state.res = 4;
         document.body.style.backgroundColor = "#ff004a";
     }
 
     function showSuccess() {
-        document.body.style.backgroundColor = ""
+        state.res = 3;
+        document.body.style.backgroundColor = "#6bbe42";
     }
-
 
     var e = document.getElementById('conl');
 
